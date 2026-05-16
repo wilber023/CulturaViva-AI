@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CulturaViva AI — Preservación Inteligente del Patrimonio Cultural</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'DM Sans', sans-serif; background-color: #f7f3ec; color: #1a1410; overflow-x: hidden; }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 9999; opacity: 0.4;
+    }
+
+    .font-display { font-family: 'Playfair Display', serif; }
+
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 1.25rem 2rem; display: flex; align-items: center; justify-content: space-between;
+      transition: background 0.4s, backdrop-filter 0.4s;
+    }
+    nav.scrolled {
+      background: rgba(247,243,236,0.92); backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(192,160,120,0.18);
+    }
+    .nav-link { font-size:0.82rem; font-weight:400; letter-spacing:0.08em; text-transform:uppercase; color:#4c3c2e; text-decoration:none; transition:color 0.2s; }
+    .nav-link:hover { color:#c2622d; }
+
+    #hero { min-height:100vh; display:flex; flex-direction:column; justify-content:flex-end; padding:0 2rem 6rem; position:relative; overflow:hidden; }
+    .hero-bg {
+      position:absolute; inset:0;
+      background: radial-gradient(ellipse 80% 60% at 70% 30%, rgba(194,98,45,0.08) 0%, transparent 60%),
+                  radial-gradient(ellipse 60% 70% at 10% 80%, rgba(107,124,90,0.07) 0%, transparent 50%), #f7f3ec;
+    }
+    .hero-line { width:0; height:1px; background:#b89f85; transition:width 1.2s ease 0.3s; }
+    .hero-line.expanded { width:100%; }
+    .hero-number { font-family:'Playfair Display',serif; font-size:clamp(7rem,18vw,18rem); line-height:0.85; color:rgba(194,98,45,0.06); position:absolute; right:-1rem; top:50%; transform:translateY(-50%); user-select:none; pointer-events:none; font-weight:700; }
+    .hero-label { font-size:0.75rem; letter-spacing:0.2em; text-transform:uppercase; color:#c2622d; font-weight:500; }
+    .hero-title { font-family:'Playfair Display',serif; font-size:clamp(3.2rem,8vw,7rem); line-height:1.0; font-weight:700; color:#1a1410; letter-spacing:-0.02em; }
+    .hero-sub { font-size:clamp(1rem,1.6vw,1.2rem); color:#705840; max-width:52ch; font-weight:300; line-height:1.7; text-align:justify; }
+
+    .scroll-dot { width:6px; height:6px; border-radius:50%; background:#c2622d; animation:bounce 2s infinite; }
+    @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(8px)} }
+
+    section { position:relative; }
+    .section-label { font-size:0.72rem; letter-spacing:0.22em; text-transform:uppercase; color:#a08565; font-weight:500; }
+    .section-title { font-family:'Playfair Display',serif; font-size:clamp(2rem,4vw,3.2rem); line-height:1.15; font-weight:700; color:#1a1410; }
+
+    .problem-card { border:1px solid rgba(192,160,120,0.25); background:rgba(255,255,255,0.5); border-radius:2px; padding:2rem; transition:border-color 0.3s,transform 0.3s,box-shadow 0.3s; position:relative; overflow:hidden; }
+    .problem-card::before { content:''; position:absolute; top:0; left:0; width:3px; height:0; background:#c2622d; transition:height 0.4s ease; }
+    .problem-card:hover::before { height:100%; }
+    .problem-card:hover { border-color:rgba(194,98,45,0.3); transform:translateY(-2px); box-shadow:0 8px 32px rgba(194,98,45,0.08); }
+    .problem-card p { text-align:justify; }
+
+    .obj-item { display:grid; grid-template-columns:3rem 1fr; gap:1.5rem; align-items:start; padding:1.5rem 0; border-bottom:1px solid rgba(192,160,120,0.18); }
+    .obj-num { font-family:'Playfair Display',serif; font-size:1.8rem; color:rgba(194,98,45,0.25); font-weight:700; line-height:1; }
+    .obj-item p { text-align:justify; }
+
+    .tech-tag { display:inline-block; border:1px solid rgba(192,160,120,0.4); padding:0.35rem 0.9rem; font-size:0.78rem; letter-spacing:0.08em; text-transform:uppercase; color:#705840; background:transparent; transition:all 0.2s; cursor:default; }
+    .tech-tag:hover { background:#c2622d; color:white; border-color:#c2622d; }
+
+    .scope-col { border:1px solid rgba(192,160,120,0.2); padding:2.5rem; background:rgba(255,255,255,0.4); }
+    .scope-item { display:flex; gap:0.75rem; align-items:flex-start; padding:0.6rem 0; font-size:0.9rem; color:#4c3c2e; border-bottom:1px solid rgba(192,160,120,0.12); }
+    .scope-item:last-child { border-bottom:none; }
+    .check { color:#6b7c5a; font-size:1rem; flex-shrink:0; margin-top:1px; }
+
+    .plan-col { flex:1; padding:2.5rem; position:relative; }
+    .plan-free { background:rgba(255,255,255,0.5); border:1px solid rgba(192,160,120,0.25); }
+    .plan-premium { background:#1a1410; color:#f7f3ec; }
+    .plan-row { display:flex; justify-content:space-between; align-items:center; padding:0.75rem 0; font-size:0.875rem; border-bottom:1px solid rgba(192,160,120,0.15); }
+    .plan-premium .plan-row { border-bottom-color:rgba(255,255,255,0.08); }
+    .plan-row:last-child { border-bottom:none; }
+
+    .reveal { opacity:0; transform:translateY(28px); transition:opacity 0.8s ease,transform 0.8s ease; }
+    .reveal.visible { opacity:1; transform:translateY(0); }
+    .reveal-delay-1 { transition-delay:0.1s; }
+    .reveal-delay-2 { transition-delay:0.2s; }
+    .reveal-delay-3 { transition-delay:0.3s; }
+    .reveal-delay-4 { transition-delay:0.4s; }
+
+    footer { background:#1a1410; color:rgba(247,243,236,0.5); }
+
+    .btn-primary { display:inline-block; background:#c2622d; color:white; padding:0.9rem 2.2rem; font-size:0.82rem; letter-spacing:0.12em; text-transform:uppercase; font-weight:500; text-decoration:none; transition:background 0.25s,transform 0.2s; border:none; cursor:pointer; }
+    .btn-primary:hover { background:#a8501f; transform:translateY(-1px); }
+    .btn-outline { display:inline-block; border:1px solid #1a1410; color:#1a1410; padding:0.9rem 2.2rem; font-size:0.82rem; letter-spacing:0.12em; text-transform:uppercase; font-weight:500; text-decoration:none; transition:background 0.25s,color 0.25s; }
+    .btn-outline:hover { background:#1a1410; color:#f7f3ec; }
+
+    .pull-quote { font-family:'Playfair Display',serif; font-size:clamp(1.4rem,2.5vw,2rem); font-style:italic; line-height:1.5; color:#1a1410; }
+
+    @media(max-width:768px) { .nav-links{display:none!important} .hero-number{display:none} }
+
+    .rule { height:1px; background:linear-gradient(90deg,transparent,rgba(192,160,120,0.4),transparent); }
+    .metric-num { font-family:'Playfair Display',serif; font-size:clamp(2.5rem,5vw,4rem); font-weight:700; color:#c2622d; line-height:1; }
+
+    .side-index { position:fixed; right:2rem; top:50%; transform:translateY(-50%); display:flex; flex-direction:column; gap:0.5rem; z-index:90; }
+    .side-dot { width:6px; height:6px; border-radius:50%; background:rgba(192,160,120,0.35); transition:background 0.3s,transform 0.3s; cursor:pointer; }
+    .side-dot.active { background:#c2622d; transform:scale(1.5); }
+    @media(max-width:1024px) { .side-index{display:none} }
+
+    /* User flow diagram */
+    .flow-step { display:flex; flex-direction:column; align-items:center; gap:0.75rem; flex:1; min-width:100px; }
+    .flow-icon { width:64px; height:64px; border-radius:50%; display:flex; align-items:center; justify-content:center; }
+    .flow-arrow { color:#c2622d; font-size:1.5rem; align-self:center; padding:0 0.5rem; flex-shrink:0; }
+    .flow-label { font-size:0.78rem; text-align:center; font-weight:500; color:#1a1410; font-family:'Playfair Display',serif; }
+    .flow-sub { font-size:0.7rem; text-align:center; color:#a08565; font-weight:300; max-width:90px; line-height:1.4; }
+
+    /* ML pipeline */
+    .ml-node { border:1px solid rgba(192,160,120,0.3); padding:1rem; background:rgba(255,255,255,0.6); border-radius:2px; }
+    .ml-node.active { background:#c2622d; border-color:#c2622d; color:white; }
+    .ml-node.dark { background:#1a1410; border-color:#1a1410; color:#f7f3ec; }
+
+    /* Ciencias header band */
+    .ciencias-band {
+      background: linear-gradient(135deg, #1a1410 0%, #2d1f16 50%, #1a1410 100%);
+      border-bottom: 1px solid rgba(194,98,45,0.3);
+      padding: 0.55rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3rem;
+      position: relative;
+      
+      overflow: hidden;
+    }
+    .ciencias-band::before {
+      content: ''; 
+      position: absolute; inset: 0;
+      background: repeating-linear-gradient(90deg, rgba(194,98,45,0.04) 0px, rgba(194,98,45,0.04) 1px, transparent 1px, transparent 60px);
+    }
+    .ciencias-item { display:flex; flex-direction:column; align-items:center; gap:0.15rem; }
+    .ciencias-label { font-size:0.62rem; letter-spacing:0.25em; text-transform:uppercase; color:rgba(247,243,236,0.35); }
+    .ciencias-value { font-family:'Playfair Display',serif; font-size:0.85rem; color:rgba(247,243,236,0.9); font-weight:600; letter-spacing:0.03em; }
+    .ciencias-sep { width:1px; height:36px; background:rgba(194,98,45,0.25); }
+
+    /* Roadmap */
+    .roadmap-phase { position:relative; padding:1.5rem; border:1px solid rgba(192,160,120,0.2); background:rgba(255,255,255,0.4); }
+    .roadmap-phase::after { content:attr(data-phase); position:absolute; top:-0.6rem; left:1rem; background:#f7f3ec; padding:0 0.5rem; font-size:0.65rem; letter-spacing:0.18em; text-transform:uppercase; color:#c2622d; font-weight:500; }
+
+    p.justified { text-align: justify; }
+
+    /* Sticker base */
+    .sticker { display:inline-flex; align-items:center; justify-content:center; }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav id="main-nav">
+    <div style="display:flex;align-items:center;gap:0.75rem;  ">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+        <rect width="28" height="28" rx="2" fill="#c2622d"/>
+        <text x="5" y="20" font-family="Georgia,serif" font-size="16" fill="white" font-weight="bold">CV</text>
+      </svg>
+      <span style="font-family:'Playfair Display',serif;font-size:1rem;font-weight:600;color:#1a1410;letter-spacing:0.01em;">CulturaViva AI</span>
+    </div>
+    <div class="nav-links" style="display:flex;gap:2.5rem;">
+      <a href="#problema" class="nav-link">Problema</a>
+      <a href="#objetivos" class="nav-link">Objetivos</a>
+      <a href="#arquitectura" class="nav-link">Solución</a>
+      <a href="#usuario" class="nav-link">Interacción</a>
+      <a href="#alcance" class="nav-link">Alcance</a>
+      <a href="#modelo" class="nav-link">Modelo</a>
+    </div>
+    <a href="#modelo" class="btn-primary" style="padding:0.6rem 1.4rem;font-size:0.75rem;">Ver propuesta</a>
+  </nav>
+
+  <!-- SIDE DOTS -->
+  <div class="side-index" id="side-index">
+    <div class="side-dot active" data-section="hero"></div>
+    <div class="side-dot" data-section="problema"></div>
+    <div class="side-dot" data-section="justificacion"></div>
+    <div class="side-dot" data-section="objetivos"></div>
+    <div class="side-dot" data-section="arquitectura"></div>
+    <div class="side-dot" data-section="usuario"></div>
+    <div class="side-dot" data-section="alcance"></div>
+    <div class="side-dot" data-section="modelo"></div>
+  </div>
+
+  <!-- ════════════════════ CIENCIAS BAND (TOP, under nav) ════════════════════ -->
+  <div style="  top:0;left:0;right:0;z-index:99;margin-top:20px">
+    <div class="ciencias-band" id="ciencias-band" style="opacity:0;transition:opacity 0.5s;">
+      <div class="ciencias-item">
+        <span class="ciencias-label">Área</span>
+        <span class="ciencias-value">Ciencias Humanas</span>
+      </div>
+      <div class="ciencias-sep"></div>
+      <div class="ciencias-item">
+        <span class="ciencias-label">Carrera</span>
+        <span class="ciencias-value">Ingeniería en Software</span>
+      </div>
+      <div class="ciencias-sep"></div>
+      <div class="ciencias-item">
+        <span class="ciencias-label">Proyecto</span>
+        <span class="ciencias-value">CulturaViva AI</span>
+      </div>
+      <div class="ciencias-sep"></div>
+      <div class="ciencias-item">
+        <span class="ciencias-label">Edición</span>
+        <span class="ciencias-value">2026</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════
+       HERO
+  ═══════════════════════════════════════ -->
+  <section id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-number">AI</div>
+
+    <div style="position:relative;z-index:1;max-width:1200px;margin:0 auto;width:100%;">
+
+      <!-- Header band inline (before scroll) -->
+      <div style="margin-bottom:3rem;" class="reveal" id="hero-band">
+        <div style="display:inline-flex;align-items:stretch;border:1px solid rgba(192,160,120,0.3);overflow:hidden;background:rgba(255,255,255,0.35);backdrop-filter:blur(8px);">
+          <div style="padding:0.9rem 1.6rem;border-right:1px solid rgba(192,160,120,0.25);display:flex;flex-direction:column;gap:0.15rem;">
+            <span style="font-size:0.58rem;letter-spacing:0.22em;text-transform:uppercase;color:#a08565;">Área</span>
+            <span style="font-family:'Playfair Display',serif;font-size:0.9rem;font-weight:700;color:#1a1410;">Ciencias Humanas</span>
+          </div>
+          <div style="padding:0.9rem 1.6rem;border-right:1px solid rgba(192,160,120,0.25);display:flex;flex-direction:column;gap:0.15rem;">
+            <span style="font-size:0.58rem;letter-spacing:0.22em;text-transform:uppercase;color:#a08565;">Carrera</span>
+            <span style="font-family:'Playfair Display',serif;font-size:0.9rem;font-weight:700;color:#1a1410;">Ingeniería en Software</span>
+          </div>
+          <div style="padding:0.9rem 1.6rem;border-right:1px solid rgba(192,160,120,0.25);display:flex;flex-direction:column;gap:0.15rem;">
+            <span style="font-size:0.58rem;letter-spacing:0.22em;text-transform:uppercase;color:#a08565;">Proyecto Integrador</span>
+            <span style="font-family:'Playfair Display',serif;font-size:0.9rem;font-weight:700;color:#c2622d;">CulturaViva AI</span>
+          </div>
+          <div style="padding:0.9rem 1.6rem;display:flex;flex-direction:column;gap:0.15rem;">
+            <span style="font-size:0.58rem;letter-spacing:0.22em;text-transform:uppercase;color:#a08565;">Edición</span>
+            <span style="font-family:'Playfair Display',serif;font-size:0.9rem;font-weight:700;color:#1a1410;">2026</span>
+          </div>
+        </div>
+
+        <!-- decorative line after band -->
+        <div class="hero-line" id="hero-line" style="margin-top:1.5rem;"></div>
+      </div>
+
+      <h1 class="hero-title reveal reveal-delay-2">
+        El patrimonio<br/>
+        <em style="font-style:italic;color:#c2622d;">no desaparece.</em><br/>
+        Se digitaliza.
+      </h1>
+
+      <div style="height:2rem;"></div>
+
+      <p class="hero-sub reveal reveal-delay-3">
+        CulturaViva AI es una plataforma inteligente que preserva, organiza y analiza el patrimonio cultural intangible de México mediante Machine Learning, NLP y modelos LLM sobre una arquitectura de microservicios escalable, sin dependencia de APIs externas.
+      </p>
+
+      <div style="height:3rem;"></div>
+
+      <div style="display:flex;align-items:center;gap:2rem;flex-wrap:wrap;" class="reveal reveal-delay-4">
+        <a href="#problema" class="btn-primary">Conocer el problema</a>
+        <a href="#arquitectura" class="btn-outline">Ver solución técnica</a>
+      </div>
+
+      <div style="height:5rem;"></div>
+
+      <!-- metric strip -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:2rem;padding-top:3rem;border-top:1px solid rgba(192,160,120,0.2);" class="reveal">
+        <div>
+          <div class="metric-num">68+</div>
+          <p style="font-size:0.82rem;color:#705840;margin-top:0.4rem;font-weight:300;text-align:justify;">lenguas indígenas en riesgo de desaparición en México</p>
+        </div>
+        <div>
+          <div class="metric-num">6</div>
+          <p style="font-size:0.82rem;color:#705840;margin-top:0.4rem;font-weight:300;text-align:justify;">categorías culturales clasificadas automáticamente por ML</p>
+        </div>
+        <div>
+          <div class="metric-num">3</div>
+          <p style="font-size:0.82rem;color:#705840;margin-top:0.4rem;font-weight:300;text-align:justify;">capas de IA: ML + NLP + LLM integradas en una sola plataforma</p>
+        </div>
+        <div>
+          <div class="metric-num">0%</div>
+          <p style="font-size:0.82rem;color:#705840;margin-top:0.4rem;font-weight:300;text-align:justify;">dependencia de APIs externas como OpenAI o Gemini</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- scroll indicator -->
+    <div style="position:absolute;bottom:2.5rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:0.5rem;">
+      <span style="font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:#a08565;">Explorar</span>
+      <div class="scroll-dot"></div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════
+       PROBLEMA
+  ═══════════════════════════════════════ -->
+  <section id="problema" style="padding:8rem 2rem;background:#f7f3ec;">
+    <div style="max-width:1200px;margin:0 auto;">
+      <div style="display:grid;grid-template-columns:1fr 2fr;gap:6rem;align-items:start;" class="responsive-grid">
+        <div class="reveal">
+          <p class="section-label" style="margin-bottom:1rem;">01 — Problemática</p>
+          <h2 class="section-title">Una crisis silenciosa que no espera.</h2>
+          <div class="rule" style="margin:2rem 0;"></div>
+          <p style="font-size:0.9rem;color:#705840;line-height:1.8;font-weight:300;text-align:justify;">
+            El patrimonio cultural intangible de México —relatos orales, leyendas, música regional, lenguas indígenas y tradiciones comunitarias— constituye la identidad viva de comunidades enteras. Hoy, ese acervo enfrenta una amenaza irreversible ante la ausencia de herramientas digitales especializadas.
+          </p>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;">
+
+          <!-- Card 1: Sin documentación -->
+          <div class="problem-card reveal reveal-delay-1">
+            <div style="margin-bottom:1rem;">
+              <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+                <rect width="36" height="36" rx="3" fill="rgba(194,98,45,0.1)"/>
+                <rect x="8" y="7" width="16" height="22" rx="1" stroke="#c2622d" stroke-width="1.5" fill="none"/>
+                <line x1="11" y1="13" x2="21" y2="13" stroke="#c2622d" stroke-width="1.2"/>
+                <line x1="11" y1="17" x2="21" y2="17" stroke="#c2622d" stroke-width="1.2"/>
+                <line x1="11" y1="21" x2="17" y2="21" stroke="#c2622d" stroke-width="1.2"/>
+                <circle cx="26" cy="26" r="6" fill="#1a1410"/>
+                <line x1="24" y1="26" x2="28" y2="26" stroke="white" stroke-width="1.5"/>
+              </svg>
+            </div>
+            <h3 style="font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:600;margin-bottom:0.5rem;color:#1a1410;">Sin documentación digital</h3>
+            <p style="font-size:0.85rem;color:#705840;line-height:1.7;font-weight:300;">Gran parte del patrimonio cultural jamás ha sido digitalizado, permaneciendo únicamente en la memoria oral de sus custodios, vulnerable a desaparecer con cada generación.</p>
+          </div>
+
+          <!-- Card 2: Información dispersa -->
+          <div class="problem-card reveal reveal-delay-2">
+            <div style="margin-bottom:1rem;">
+              <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+                <rect width="36" height="36" rx="3" fill="rgba(107,124,90,0.1)"/>
+                <rect x="6" y="10" width="10" height="8" rx="1" stroke="#6b7c5a" stroke-width="1.4" fill="none"/>
+                <rect x="20" y="6" width="10" height="8" rx="1" stroke="#6b7c5a" stroke-width="1.4" fill="none"/>
+                <rect x="14" y="20" width="10" height="8" rx="1" stroke="#6b7c5a" stroke-width="1.4" fill="none"/>
+                <line x1="16" y1="14" x2="20" y2="10" stroke="#c2622d" stroke-width="1" stroke-dasharray="2 2"/>
+                <line x1="16" y1="14" x2="19" y2="20" stroke="#c2622d" stroke-width="1" stroke-dasharray="2 2"/>
+              </svg>
+            </div>
+            <h3 style="font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:600;margin-bottom:0.5rem;color:#1a1410;">Información dispersa</h3>
+            <p style="font-size:0.85rem;color:#705840;line-height:1.7;font-weight:300;">El contenido documentado se encuentra fragmentado en archivos físicos o plataformas digitales aisladas, sin estructura ni capacidad de análisis cruzado entre registros.</p>
+          </div>
+
+          <!-- Card 3: Sin herramientas inteligentes -->
+          <div class="problem-card reveal reveal-delay-3">
+            <div style="margin-bottom:1rem;">
+              <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+                <rect width="36" height="36" rx="3" fill="rgba(184,147,15,0.1)"/>
+                <circle cx="18" cy="16" r="7" stroke="#b8930f" stroke-width="1.4" fill="none"/>
+                <circle cx="18" cy="16" r="2.5" fill="#b8930f"/>
+                <line x1="18" y1="9" x2="18" y2="7" stroke="#b8930f" stroke-width="1.4"/>
+                <line x1="18" y1="23" x2="18" y2="25" stroke="#b8930f" stroke-width="1.4"/>
+                <line x1="11" y1="16" x2="9" y2="16" stroke="#b8930f" stroke-width="1.4"/>
+                <line x1="25" y1="16" x2="27" y2="16" stroke="#b8930f" stroke-width="1.4"/>
+                <line x1="18" y1="26" x2="22" y2="30" stroke="#b8930f" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <h3 style="font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:600;margin-bottom:0.5rem;color:#1a1410;">Sin herramientas inteligentes</h3>
+            <p style="font-size:0.85rem;color:#705840;line-height:1.7;font-weight:300;">Las instituciones culturales carecen de soluciones que analicen grandes volúmenes de contenido de forma automática, contextualizada y con capacidad de detección de patrones.</p>
+          </div>
+
+          <!-- Card 4: Brecha generacional -->
+          <div class="problem-card reveal reveal-delay-4">
+            <div style="margin-bottom:1rem;">
+              <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+                <rect width="36" height="36" rx="3" fill="rgba(76,60,46,0.08)"/>
+                <!-- phone -->
+                <rect x="13" y="7" width="11" height="18" rx="2" stroke="#4c3c2e" stroke-width="1.4" fill="none"/>
+                <line x1="16" y1="22" x2="21" y2="22" stroke="#4c3c2e" stroke-width="1.2"/>
+                <!-- person old -->
+                <circle cx="7" cy="13" r="3" stroke="#a08565" stroke-width="1.2" fill="none"/>
+                <path d="M4 22 Q5 18 7 18 Q9 18 10 22" stroke="#a08565" stroke-width="1.2" fill="none"/>
+                <!-- arrow -->
+                <line x1="11" y1="16" x2="13" y2="16" stroke="#c2622d" stroke-width="1" stroke-dasharray="2 1.5"/>
+                <!-- signal dots on phone -->
+                <circle cx="17" cy="12" r="0.8" fill="#c2622d"/>
+                <circle cx="19" cy="12" r="0.8" fill="#c2622d"/>
+                <circle cx="21" cy="12" r="0.8" fill="#c2622d" opacity="0.4"/>
+              </svg>
+            </div>
+            <h3 style="font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:600;margin-bottom:0.5rem;color:#1a1410;">Brecha generacional</h3>
+            <p style="font-size:0.85rem;color:#705840;line-height:1.7;font-weight:300;">Los formatos tradicionales de preservación no resultan atractivos para las nuevas generaciones, quienes demandan interfaces digitales interactivas y accesibles desde dispositivos móviles.</p>
+          </div>
+
+        </div>
+      </div>
+
+      <div style="margin-top:6rem;" class="reveal">
+        <blockquote style="border-left:3px solid #c2622d;padding:2rem 2.5rem;background:rgba(194,98,45,0.04);">
+          <p class="pull-quote">"Si el patrimonio cultural no se adapta a los medios digitales, el riesgo de desconexión identitaria es inevitable para las nuevas generaciones."</p>
+        </blockquote>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════
+       JUSTIFICACIÓN
+  ═══════════════════════════════════════ -->
+  <section id="justificacion" style="padding:8rem 2rem;background:#1a1410;color:#f7f3ec;">
+    <div style="max-width:1200px;margin:0 auto;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6rem;align-items:center;" class="responsive-grid">
+        <div class="reveal">
+          <p class="section-label" style="margin-bottom:1rem;color:#a08565;">02 — Justificación</p>
+          <h2 class="section-title" style="color:#f7f3ec;">La IA como potenciador, no como sustituto.</h2>
+          <div class="rule" style="margin:2rem 0;background:linear-gradient(90deg,transparent,rgba(192,160,120,0.3),transparent);"></div>
+          <p style="font-size:0.95rem;color:rgba(247,243,236,0.65);line-height:1.85;font-weight:300;margin-bottom:2rem;text-align:justify;">
+            CulturaViva AI no reemplaza a investigadores ni expertos culturales. Su función es <strong style="color:#f7f3ec;font-weight:500;">potenciar sus capacidades</strong>, permitiéndoles procesar grandes volúmenes de información que serían inviables de gestionar manualmente.
+          </p>
+          <p style="font-size:0.95rem;color:rgba(247,243,236,0.65);line-height:1.85;font-weight:300;text-align:justify;">
+            A diferencia de los repositorios digitales pasivos existentes, la plataforma <strong style="color:#f7f3ec;font-weight:500;">interpreta, clasifica y relaciona</strong> contenido cultural de forma automática, detectando patrones semánticos y tradiciones en riesgo de desaparecer sin necesidad de APIs externas.
+          </p>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:1.5rem;" class="reveal reveal-delay-2">
+
+          <!-- Impact cards with SVG stickers -->
+          <div style="display:flex;gap:1.5rem;align-items:flex-start;padding:1.5rem;border:1px solid rgba(192,160,120,0.15);background:rgba(255,255,255,0.03);">
+            <div style="flex-shrink:0;">
+              <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                <rect width="40" height="40" rx="3" fill="rgba(194,98,45,0.15)"/>
+                <rect x="8" y="22" width="8" height="11" rx="1" fill="#c2622d" opacity="0.7"/>
+                <rect x="16" y="16" width="8" height="17" rx="1" fill="#c2622d" opacity="0.85"/>
+                <rect x="24" y="10" width="8" height="23" rx="1" fill="#c2622d"/>
+                <path d="M10 19 L18 14 L26 9" stroke="#f7f3ec" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div>
+              <h4 style="font-family:'Playfair Display',serif;font-size:1rem;color:#f7f3ec;margin-bottom:0.4rem;">Impacto Cultural</h4>
+              <p style="font-size:0.83rem;color:rgba(247,243,236,0.55);line-height:1.65;font-weight:300;text-align:justify;">Preservación activa del patrimonio intangible y promoción de tradiciones locales en riesgo de desaparición mediante análisis automatizado.</p>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:1.5rem;align-items:flex-start;padding:1.5rem;border:1px solid rgba(192,160,120,0.15);background:rgba(255,255,255,0.03);">
+            <div style="flex-shrink:0;">
+              <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                <rect width="40" height="40" rx="3" fill="rgba(107,124,90,0.15)"/>
+                <circle cx="20" cy="14" r="5" stroke="#6b7c5a" stroke-width="1.5" fill="none"/>
+                <path d="M10 32 Q10 24 20 24 Q30 24 30 32" stroke="#6b7c5a" stroke-width="1.5" fill="none"/>
+                <circle cx="20" cy="14" r="2" fill="#6b7c5a"/>
+                <line x1="20" y1="19" x2="20" y2="22" stroke="#6b7c5a" stroke-width="1.2"/>
+              </svg>
+            </div>
+            <div>
+              <h4 style="font-family:'Playfair Display',serif;font-size:1rem;color:#f7f3ec;margin-bottom:0.4rem;">Impacto Educativo</h4>
+              <p style="font-size:0.83rem;color:rgba(247,243,236,0.55);line-height:1.65;font-weight:300;text-align:justify;">Herramienta de investigación para estudiantes, docentes e investigadores con acceso organizado, semántico y analítico a información cultural.</p>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:1.5rem;align-items:flex-start;padding:1.5rem;border:1px solid rgba(192,160,120,0.15);background:rgba(255,255,255,0.03);">
+            <div style="flex-shrink:0;">
+              <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                <rect width="40" height="40" rx="3" fill="rgba(184,147,15,0.12)"/>
+                <rect x="10" y="14" width="20" height="14" rx="2" stroke="#b8930f" stroke-width="1.4" fill="none"/>
+                <circle cx="14" cy="21" r="2" fill="#b8930f" opacity="0.8"/>
+                <circle cx="20" cy="21" r="2" fill="#b8930f"/>
+                <circle cx="26" cy="21" r="2" fill="#b8930f" opacity="0.5"/>
+                <line x1="20" y1="8" x2="20" y2="14" stroke="#b8930f" stroke-width="1.4"/>
+                <line x1="16" y1="8" x2="24" y2="8" stroke="#b8930f" stroke-width="1.4"/>
+              </svg>
+            </div>
+            <div>
+              <h4 style="font-family:'Playfair Display',serif;font-size:1rem;color:#f7f3ec;margin-bottom:0.4rem;">Impacto Tecnológico</h4>
+              <p style="font-size:0.83rem;color:rgba(247,243,236,0.55);line-height:1.65;font-weight:300;text-align:justify;">Aplicación práctica de IA en humanidades digitales, demostrando el potencial de ML y NLP en ciencias humanas a través de una arquitectura autónoma.</p>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:1.5rem;align-items:flex-start;padding:1.5rem;border:1px solid rgba(192,160,120,0.15);background:rgba(255,255,255,0.03);">
+            <div style="flex-shrink:0;">
+              <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                <rect width="40" height="40" rx="3" fill="rgba(107,124,90,0.12)"/>
+                <circle cx="20" cy="20" r="10" stroke="#6b7c5a" stroke-width="1.3" fill="none"/>
+                <ellipse cx="20" cy="20" rx="5" ry="10" stroke="#6b7c5a" stroke-width="1.1" fill="none"/>
+                <line x1="10" y1="20" x2="30" y2="20" stroke="#6b7c5a" stroke-width="1.1"/>
+                <line x1="12" y1="14" x2="28" y2="14" stroke="#6b7c5a" stroke-width="0.8" opacity="0.5"/>
+                <line x1="12" y1="26" x2="28" y2="26" stroke="#6b7c5a" stroke-width="0.8" opacity="0.5"/>
+              </svg>
+            </div>
+            <div>
+              <h4 style="font-family:'Playfair Display',serif;font-size:1rem;color:#f7f3ec;margin-bottom:0.4rem;">Impacto Social</h4>
+              <p style="font-size:0.83rem;color:rgba(247,243,236,0.55);line-height:1.65;font-weight:300;text-align:justify;">Inclusión digital, fortalecimiento de la identidad regional y soporte analítico para museos, centros culturales y universidades en todo el país.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Tech badges -->
+      <div style="margin-top:5rem;padding-top:3rem;border-top:1px solid rgba(192,160,120,0.12);" class="reveal">
+        <p style="font-size:0.72rem;letter-spacing:0.2em;text-transform:uppercase;color:#a08565;margin-bottom:1.5rem;">Tecnologías aplicadas</p>
+        <div style="display:flex;flex-wrap:wrap;gap:0.75rem;">
+          <span class="tech-tag">Machine Learning</span>
+          <span class="tech-tag">NLP · Embeddings</span>
+          <span class="tech-tag">LLM Local</span>
+          <span class="tech-tag">Voz a Texto</span>
+          <span class="tech-tag">Microservicios</span>
+          <span class="tech-tag">Flutter · Android</span>
+          <span class="tech-tag">React · TailwindCSS</span>
+          <span class="tech-tag">FastAPI · Python</span>
+          <span class="tech-tag">PostgreSQL · MongoDB · Elasticsearch</span>
+          <span class="tech-tag">JWT · OAuth 2.0 · RBAC</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════
+       OBJETIVOS
+  ═══════════════════════════════════════ -->
+  <section id="objetivos" style="padding:8rem 2rem;background:#f7f3ec;">
+    <div style="max-width:1200px;margin:0 auto;">
+      <div style="display:grid;grid-template-columns:1fr 2fr;gap:6rem;align-items:start;" class="responsive-grid">
+        <div class="reveal">
+          <p class="section-label" style="margin-bottom:1rem;">03 — Objetivos</p>
+          <h2 class="section-title">Qué construimos exactamente.</h2>
+          <div class="rule" style="margin:2rem 0;"></div>
+          <p style="font-size:0.88rem;color:#705840;line-height:1.8;font-weight:300;text-align:justify;">El objetivo general es desarrollar una aplicación Android como interfaz principal para registro, exploración y difusión del patrimonio cultural intangible, complementada por un portal web de administración institucional, integrando ML, NLP y LLM locales sobre una arquitectura de microservicios escalable.</p>
+        </div>
+        <div class="reveal reveal-delay-1">
+          <div class="obj-item">
+            <span class="obj-num">01</span>
+            <div>
+              <h4 style="font-family:'Playfair Display',serif;font-size:1rem;font-weight:600;color:#1a1410;margin-bottom:0.3rem;">Arquitectura de microservicios</h4>
+              <p style="font-size:0.85rem;color:#705840;line-height:1.65;font-weight:300;">Diseñar e implementar una arquitectura que garantice independencia funcional, escalabilidad horizontal y tolerancia a fallos de cada componente del sistema.</p>
+            </div>
+          </div>
+          <div class="obj-item">
+            <span class="obj-num">02</span>
+            <div>
+              <h4 style="font-family:'Playfair Display',serif;font-size:1rem;font-weight:600;color:#1a1410;margin-bottom:0.3rem;">App Android nativa</h4>
+              <p style="font-size:0.85rem;color:#705840;line-height:1.65;font-weight:300;">Desarrollar una aplicación para registro, exploración y consulta de contenido cultural, optimizada para comunidades con conectividad limitada.</p>
+            </div>
+          </div>
+          <div class="obj-item">
+            <span class="obj-num">03</span>
+            <div>
+              <h4 style="font-family:'Playfair Display',serif;font-size:1rem;font-weight:600;color:#1a1410;margin-bottom:0.3rem;">Conversión de voz a texto</h4>
+              <p style="font-size:0.85rem;color:#705840;line-height:1.65;font-weight:300;">Implementar carga multimedia con transcripción de relatos orales y expresiones en lenguas indígenas directamente desde el dispositivo Android, incluyendo soporte offline.</p>
+            </div>
+          </div>
+          <div class="obj-item">
+            <span class="obj-num">04</span>
+            <div>
+              <h4 style="font-family:'Playfair Display',serif;font-size:1rem;font-weight:600;color:#1a1410;margin-bottom:0.3rem;">Clasificación automática ML</h4>
+              <p style="font-size:0.85rem;color:#705840;line-height:1.65;font-weight:300;">Entrenar algoritmos para clasificar registros culturales en al menos 6 categorías con detección de tradiciones en riesgo de desaparición.</p>
+            </div>
+          </div>
+          <div class="obj-item">
+            <span class="obj-num">05</span>
+            <div>
+              <h4 style="font-family:'Playfair Display',serif;font-size:1rem;font-weight:600;color:#1a1410;margin-bottom:0.3rem;">Búsqueda semántica con NLP</h4>
+              <p style="font-size:0.85rem;color:#705840;line-height:1.65;font-weight:300;">Motor basado en embeddings que permite consultas conceptuales y descubre relaciones no evidentes entre registros culturales de distintas regiones del país.</p>
+            </div>
+          </div>
+          <div class="obj-item">
+            <span class="obj-num">06</span>
+            <div>
+              <h4 style="font-family:'Playfair Display',serif;font-size:1rem;font-weight:600;color:#1a1410;margin-bottom:0.3rem;">LLM ajustado para humanidades</h4>
+              <p style="font-size:0.85rem;color:#705840;line-height:1.65;font-weight:300;">Modelo de lenguaje local ajustado sobre corpus de humanidades digitales para resúmenes culturales y consultas contextualizadas sin APIs externas.</p>
+            </div>
+          </div>
+          <div class="obj-item" style="border-bottom:none;">
+            <span class="obj-num">07</span>
+            <div>
+              <h4 style="font-family:'Playfair Display',serif;font-size:1rem;font-weight:600;color:#1a1410;margin-bottom:0.3rem;">Dashboard administrativo</h4>
+              <p style="font-size:0.85rem;color:#705840;line-height:1.65;font-weight:300;">Panel web con minería de datos culturales que apoya la toma de decisiones de centros culturales, museos e instituciones académicas.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════
+       ARQUITECTURA / SOLUCIÓN
+  ═══════════════════════════════════════ -->
+  <section id="arquitectura" style="padding:8rem 2rem;background:#faf9f7;border-top:1px solid rgba(192,160,120,0.15);">
+    <div style="max-width:1200px;margin:0 auto;">
+      <div style="text-align:center;margin-bottom:5rem;" class="reveal">
+        <p class="section-label" style="margin-bottom:1rem;">04 — Solución técnica</p>
+        <h2 class="section-title" style="max-width:30ch;margin:0 auto;">Una arquitectura pensada para durar décadas, no meses.</h2>
+      </div>
+
+      <!-- Flow diagram with SVG stickers -->
+      <div style="margin-bottom:5rem;" class="reveal reveal-delay-1">
+        <p style="font-size:0.72rem;letter-spacing:0.18em;text-transform:uppercase;color:#a08565;margin-bottom:1.5rem;text-align:center;">Flujo de procesamiento cultural</p>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(192,160,120,0.2);">
+
+          <div style="background:#faf9f7;padding:2rem;text-align:center;">
+            <div style="margin:0 auto 0.75rem;width:48px;height:48px;">
+              <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                <circle cx="24" cy="24" r="22" fill="rgba(194,98,45,0.1)" stroke="rgba(194,98,45,0.2)" stroke-width="1"/>
+                <circle cx="24" cy="18" r="6" stroke="#c2622d" stroke-width="1.5" fill="none"/>
+                <line x1="24" y1="24" x2="24" y2="34" stroke="#c2622d" stroke-width="1.5"/>
+                <line x1="18" y1="27" x2="24" y2="24" stroke="#c2622d" stroke-width="1.5"/>
+                <line x1="30" y1="27" x2="24" y2="24" stroke="#c2622d" stroke-width="1.5"/>
+                <!-- mic indicator -->
+                <ellipse cx="34" cy="34" rx="7" ry="7" fill="#1a1410"/>
+                <rect x="31" y="30" width="6" height="7" rx="3" stroke="white" stroke-width="1.2" fill="none"/>
+                <line x1="34" y1="37" x2="34" y2="39" stroke="white" stroke-width="1.2"/>
+                <line x1="31" y1="39" x2="37" y2="39" stroke="white" stroke-width="1.2"/>
+              </svg>
+            </div>
+            <div style="font-family:'Playfair Display',serif;font-size:0.95rem;font-weight:600;color:#1a1410;margin-bottom:0.4rem;">Ingesta</div>
+            <div style="font-size:0.78rem;color:#a08565;font-weight:300;">Texto · Audio · Imagen</div>
+          </div>
+
+          <div style="background:#faf9f7;padding:2rem;text-align:center;position:relative;">
+            <div style="position:absolute;left:-12px;top:50%;transform:translateY(-50%);color:#c2622d;font-size:1.2rem;">→</div>
+            <div style="margin:0 auto 0.75rem;width:48px;height:48px;">
+              <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                <circle cx="24" cy="24" r="22" fill="rgba(107,124,90,0.1)" stroke="rgba(107,124,90,0.2)" stroke-width="1"/>
+                <rect x="14" y="16" width="20" height="16" rx="2" stroke="#6b7c5a" stroke-width="1.4" fill="none"/>
+                <line x1="18" y1="21" x2="30" y2="21" stroke="#6b7c5a" stroke-width="1.2"/>
+                <line x1="18" y1="25" x2="26" y2="25" stroke="#6b7c5a" stroke-width="1.2"/>
+                <path d="M30 26 L34 30" stroke="#c2622d" stroke-width="1.5" stroke-linecap="round"/>
+                <circle cx="34" cy="30" r="3" stroke="#c2622d" stroke-width="1.2" fill="none"/>
+              </svg>
+            </div>
+            <div style="font-family:'Playfair Display',serif;font-size:0.95rem;font-weight:600;color:#1a1410;margin-bottom:0.4rem;">Procesamiento</div>
+            <div style="font-size:0.78rem;color:#a08565;font-weight:300;">Transcripción · Embeddings</div>
+          </div>
+
+          <div style="background:#faf9f7;padding:2rem;text-align:center;position:relative;">
+            <div style="position:absolute;left:-12px;top:50%;transform:translateY(-50%);color:#c2622d;font-size:1.2rem;">→</div>
+            <div style="margin:0 auto 0.75rem;width:48px;height:48px;">
+              <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                <circle cx="24" cy="24" r="22" fill="rgba(184,147,15,0.1)" stroke="rgba(184,147,15,0.2)" stroke-width="1"/>
+                <!-- brain outline -->
+                <path d="M24 14 C20 12 14 14 14 20 C14 24 16 26 14 30 C14 34 18 36 22 34 L24 36 L26 34 C30 36 34 34 34 30 C32 26 34 24 34 20 C34 14 28 12 24 14Z" stroke="#b8930f" stroke-width="1.3" fill="none"/>
+                <line x1="24" y1="14" x2="24" y2="36" stroke="#b8930f" stroke-width="0.8" opacity="0.4"/>
+                <circle cx="20" cy="22" r="1.5" fill="#b8930f" opacity="0.7"/>
+                <circle cx="28" cy="22" r="1.5" fill="#b8930f" opacity="0.7"/>
+                <circle cx="24" cy="27" r="1.5" fill="#b8930f"/>
+              </svg>
+            </div>
+            <div style="font-family:'Playfair Display',serif;font-size:0.95rem;font-weight:600;color:#1a1410;margin-bottom:0.4rem;">Análisis</div>
+            <div style="font-size:0.78rem;color:#a08565;font-weight:300;">Clasificación · Patrones · LLM</div>
+          </div>
+
+          <div style="background:#c2622d;padding:2rem;text-align:center;position:relative;">
+            <div style="position:absolute;left:-12px;top:50%;transform:translateY(-50%);color:#c2622d;font-size:1.2rem;">→</div>
+            <div style="margin:0 auto 0.75rem;width:48px;height:48px;">
+              <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                <circle cx="24" cy="24" r="22" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+                <rect x="10" y="28" width="6" height="12" rx="1" fill="white" opacity="0.6"/>
+                <rect x="18" y="22" width="6" height="18" rx="1" fill="white" opacity="0.75"/>
+                <rect x="26" y="16" width="6" height="24" rx="1" fill="white" opacity="0.9"/>
+                <rect x="34" y="10" width="6" height="30" rx="1" fill="white"/>
+              </svg>
+            </div>
+            <div style="font-family:'Playfair Display',serif;font-size:0.95rem;font-weight:600;color:white;margin-bottom:0.4rem;">Resultados</div>
+            <div style="font-size:0.78rem;color:rgba(255,255,255,0.7);font-weight:300;">Búsqueda · Reportes · Insights</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Microservices diagram -->
+      <div class="reveal reveal-delay-2">
+        <p style="font-size:0.72rem;letter-spacing:0.18em;text-transform:uppercase;color:#a08565;margin-bottom:2rem;text-align:center;">Arquitectura de microservicios</p>
+
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.5rem;">
+          <div style="border:1px solid rgba(192,160,120,0.3);padding:1rem;text-align:center;background:rgba(255,255,255,0.6);">
+            <div style="font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;color:#a08565;margin-bottom:0.3rem;">Cliente principal</div>
+            <div style="font-family:'Playfair Display',serif;font-size:0.9rem;font-weight:600;color:#1a1410;">App Flutter / Android</div>
+          </div>
+          <div style="border:1px solid rgba(192,160,120,0.3);padding:1rem;text-align:center;background:rgba(255,255,255,0.6);">
+            <div style="font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;color:#a08565;margin-bottom:0.3rem;">Portal administrativo</div>
+            <div style="font-family:'Playfair Display',serif;font-size:0.9rem;font-weight:600;color:#1a1410;">Web React</div>
+          </div>
+          <div style="border:1px solid rgba(192,160,120,0.3);padding:1rem;text-align:center;background:rgba(255,255,255,0.6);">
+            <div style="font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;color:#a08565;margin-bottom:0.3rem;">Presentación pública</div>
+            <div style="font-family:'Playfair Display',serif;font-size:0.9rem;font-weight:600;color:#1a1410;">Landing Page</div>
+          </div>
+        </div>
+
+        <div style="border:2px solid #1a1410;padding:1rem;text-align:center;background:#1a1410;margin-bottom:1.5rem;">
+          <div style="font-size:0.72rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(247,243,236,0.5);margin-bottom:0.2rem;">Capa de orquestación</div>
+          <div style="font-size:0.9rem;font-weight:500;color:#f7f3ec;">API Gateway / Load Balancer</div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:0.75rem;margin-bottom:1.5rem;">
+          <div style="border:1px solid #c2622d;padding:1rem;text-align:center;background:rgba(194,98,45,0.04);">
+            <div style="margin:0 auto 0.3rem;width:28px;height:28px;"><svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="2" fill="rgba(194,98,45,0.15)"/><rect x="8" y="8" width="12" height="12" rx="6" stroke="#c2622d" stroke-width="1.3" fill="none"/><line x1="14" y1="20" x2="14" y2="23" stroke="#c2622d" stroke-width="1.3"/><line x1="10" y1="23" x2="18" y2="23" stroke="#c2622d" stroke-width="1.3"/><line x1="14" y1="11" x2="14" y2="13" stroke="#c2622d" stroke-width="1.2"/><line x1="11" y1="14" x2="13" y2="14" stroke="#c2622d" stroke-width="1.2"/><line x1="15" y1="14" x2="17" y2="14" stroke="#c2622d" stroke-width="1.2"/></svg></div>
+            <div style="font-size:0.78rem;font-weight:500;color:#1a1410;">Auth Service</div>
+            <div style="font-size:0.7rem;color:#a08565;">JWT · OAuth 2.0</div>
+          </div>
+          <div style="border:1px solid rgba(192,160,120,0.3);padding:1rem;text-align:center;background:rgba(255,255,255,0.5);">
+            <div style="margin:0 auto 0.3rem;width:28px;height:28px;"><svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="2" fill="rgba(192,160,120,0.1)"/><rect x="7" y="6" width="10" height="14" rx="1" stroke="#a08565" stroke-width="1.2" fill="none"/><line x1="9" y1="10" x2="15" y2="10" stroke="#a08565" stroke-width="1"/><line x1="9" y1="13" x2="15" y2="13" stroke="#a08565" stroke-width="1"/><line x1="9" y1="16" x2="13" y2="16" stroke="#a08565" stroke-width="1"/><rect x="14" y="14" width="8" height="9" rx="1" fill="#a08565" opacity="0.2" stroke="#a08565" stroke-width="1.1"/></svg></div>
+            <div style="font-size:0.78rem;font-weight:500;color:#1a1410;">Content Service</div>
+            <div style="font-size:0.7rem;color:#a08565;">FastAPI · Python</div>
+          </div>
+          <div style="border:1px solid rgba(192,160,120,0.3);padding:1rem;text-align:center;background:rgba(255,255,255,0.5);">
+            <div style="margin:0 auto 0.3rem;width:28px;height:28px;"><svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="2" fill="rgba(192,160,120,0.1)"/><circle cx="12" cy="14" r="5" stroke="#6b7c5a" stroke-width="1.2" fill="none"/><line x1="16" y1="18" x2="21" y2="22" stroke="#6b7c5a" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="11" r="1.2" fill="#6b7c5a" opacity="0.5"/></svg></div>
+            <div style="font-size:0.78rem;font-weight:500;color:#1a1410;">NLP Service</div>
+            <div style="font-size:0.7rem;color:#a08565;">spaCy · Transformers</div>
+          </div>
+          <div style="border:1px solid rgba(192,160,120,0.3);padding:1rem;text-align:center;background:rgba(255,255,255,0.5);">
+            <div style="margin:0 auto 0.3rem;width:28px;height:28px;"><svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="2" fill="rgba(184,147,15,0.1)"/><path d="M14 6 C11 5 6 7 6 12 C6 15 7.5 16.5 6 19 C6 22 9 23 12 22 L14 23 L16 22 C19 23 22 22 22 19 C20.5 16.5 22 15 22 12 C22 7 17 5 14 6Z" stroke="#b8930f" stroke-width="1.2" fill="none"/><circle cx="11.5" cy="13" r="1" fill="#b8930f" opacity="0.7"/><circle cx="16.5" cy="13" r="1" fill="#b8930f" opacity="0.7"/><circle cx="14" cy="17" r="1" fill="#b8930f"/></svg></div>
+            <div style="font-size:0.78rem;font-weight:500;color:#1a1410;">ML Service</div>
+            <div style="font-size:0.7rem;color:#a08565;">scikit-learn</div>
+          </div>
+          <div style="border:1px solid rgba(192,160,120,0.3);padding:1rem;text-align:center;background:rgba(255,255,255,0.5);">
+            <div style="margin:0 auto 0.3rem;width:28px;height:28px;"><svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="2" fill="rgba(192,160,120,0.1)"/><rect x="5" y="18" width="4" height="7" rx="0.5" fill="#a08565" opacity="0.5"/><rect x="11" y="13" width="4" height="12" rx="0.5" fill="#a08565" opacity="0.7"/><rect x="17" y="8" width="4" height="17" rx="0.5" fill="#c2622d" opacity="0.8"/><line x1="5" y1="15" x2="23" y2="7" stroke="#c2622d" stroke-width="1" opacity="0.5" stroke-dasharray="2 2"/></svg></div>
+            <div style="font-size:0.78rem;font-weight:500;color:#1a1410;">Analytics Service</div>
+            <div style="font-size:0.7rem;color:#a08565;">Pandas · Mining</div>
+          </div>
+          <div style="border:1px solid rgba(192,160,120,0.3);padding:1rem;text-align:center;background:rgba(255,255,255,0.5);">
+            <div style="margin:0 auto 0.3rem;width:28px;height:28px;"><svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="2" fill="rgba(192,160,120,0.1)"/><rect x="8" y="8" width="12" height="14" rx="2" stroke="#4c3c2e" stroke-width="1.2" fill="none"/><path d="M11 13 Q14 10 17 13" stroke="#c2622d" stroke-width="1.2" fill="none"/><path d="M11 17 Q14 14 17 17" stroke="#c2622d" stroke-width="1" fill="none" opacity="0.5"/></svg></div>
+            <div style="font-size:0.78rem;font-weight:500;color:#1a1410;">Media Service</div>
+            <div style="font-size:0.7rem;color:#a08565;">Node.js · FFmpeg</div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;">
+          <div style="border:1px solid rgba(107,124,90,0.4);padding:1rem;text-align:center;background:rgba(107,124,90,0.05);">
+            <div style="font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:#6b7c5a;margin-bottom:0.3rem;">Datos estructurados</div>
+            <div style="font-size:0.85rem;font-weight:500;color:#4c3c2e;">PostgreSQL</div>
+          </div>
+          <div style="border:1px solid rgba(107,124,90,0.4);padding:1rem;text-align:center;background:rgba(107,124,90,0.05);">
+            <div style="font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:#6b7c5a;margin-bottom:0.3rem;">Contenido cultural</div>
+            <div style="font-size:0.85rem;font-weight:500;color:#4c3c2e;">MongoDB</div>
+          </div>
+          <div style="border:1px solid rgba(107,124,90,0.4);padding:1rem;text-align:center;background:rgba(107,124,90,0.05);">
+            <div style="font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:#6b7c5a;margin-bottom:0.3rem;">Búsqueda semántica</div>
+            <div style="font-size:0.85rem;font-weight:500;color:#4c3c2e;">Elasticsearch</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════
+       INTERACCIÓN DE USUARIO / ML FLOW
+  ═══════════════════════════════════════ -->
+  <section id="usuario" style="padding:8rem 2rem;background:#1a1410;color:#f7f3ec;">
+    <div style="max-width:1200px;margin:0 auto;">
+
+      <div style="text-align:center;margin-bottom:5rem;" class="reveal">
+        <p class="section-label" style="margin-bottom:1rem;color:#a08565;">05 — Interacción y funcionamiento</p>
+        <h2 class="section-title" style="color:#f7f3ec;">Cómo vive el usuario la plataforma.</h2>
+        <p style="font-size:0.9rem;color:rgba(247,243,236,0.55);max-width:58ch;margin:1.5rem auto 0;line-height:1.8;font-weight:300;text-align:justify;">Desde el registro de un relato oral hasta la generación de un reporte institucional, cada acción del usuario activa una cadena de inteligencia artificial que transforma el contenido cultural en conocimiento estructurado y accesible.</p>
+      </div>
+
+      <!-- User journey flow -->
+      <div class="reveal reveal-delay-1" style="margin-bottom:5rem;">
+        <p style="font-size:0.72rem;letter-spacing:0.18em;text-transform:uppercase;color:#a08565;margin-bottom:2rem;text-align:center;">Flujo de interacción del usuario</p>
+
+        <div style="display:flex;align-items:flex-start;justify-content:center;flex-wrap:wrap;gap:0;overflow-x:auto;padding-bottom:1rem;">
+
+          <!-- Step 1 -->
+          <div style="display:flex;flex-direction:column;align-items:center;min-width:100px;flex:1;max-width:130px;">
+            <div style="width:70px;height:70px;border-radius:50%;background:rgba(194,98,45,0.15);border:1.5px solid rgba(194,98,45,0.4);display:flex;align-items:center;justify-content:center;margin-bottom:0.75rem;">
+              <svg width="34" height="34" viewBox="0 0 34 34" fill="none">
+                <circle cx="17" cy="11" r="5" stroke="#c2622d" stroke-width="1.4" fill="none"/>
+                <path d="M7 30 Q7 22 17 22 Q27 22 27 30" stroke="#c2622d" stroke-width="1.4" fill="none"/>
+              </svg>
+            </div>
+            <div style="font-family:'Playfair Display',serif;font-size:0.78rem;font-weight:600;color:#f7f3ec;text-align:center;margin-bottom:0.3rem;">Registro</div>
+            <div style="font-size:0.68rem;color:rgba(247,243,236,0.4);text-align:center;line-height:1.4;">Ciudadano o investigador crea cuenta</div>
+          </div>
+
+          <div style="color:rgba(194,98,45,0.5);font-size:1.3rem;align-self:center;padding:0 0.25rem;margin-bottom:1.5rem;">→</div>
+
+          <!-- Step 2 -->
+          <div style="display:flex;flex-direction:column;align-items:center;min-width:100px;flex:1;max-width:130px;">
+            <div style="width:70px;height:70px;border-radius:50%;background:rgba(107,124,90,0.15);border:1.5px solid rgba(107,124,90,0.4);display:flex;align-items:center;justify-content:center;margin-bottom:0.75rem;">
+              <svg width="34" height="34" viewBox="0 0 34 34" fill="none">
+                <!-- phone -->
+                <rect x="10" y="5" width="14" height="22" rx="2" stroke="#6b7c5a" stroke-width="1.4" fill="none"/>
+                <line x1="13" y1="23" x2="21" y2="23" stroke="#6b7c5a" stroke-width="1.2"/>
+                <!-- mic overlay -->
+                <ellipse cx="23" cy="23" rx="8" ry="8" fill="#1a1410"/>
+                <rect x="20" y="19" width="6" height="8" rx="3" stroke="#6b7c5a" stroke-width="1.2" fill="none"/>
+                <line x1="23" y1="27" x2="23" y2="30" stroke="#6b7c5a" stroke-width="1.2"/>
+                <line x1="20" y1="30" x2="26" y2="30" stroke="#6b7c5a" stroke-width="1.2"/>
+              </svg>
+            </div>
+            <div style="font-family:'Playfair Display',serif;font-size:0.78rem;font-weight:600;color:#f7f3ec;text-align:center;margin-bottom:0.3rem;">Captura</div>
+            <div style="font-size:0.68rem;color:rgba(247,243,236,0.4);text-align:center;line-height:1.4;">Graba audio, sube texto o imagen desde Android</div>
+          </div>
+
+          <div style="color:rgba(194,98,45,0.5);font-size:1.3rem;align-self:center;padding:0 0.25rem;margin-bottom:1.5rem;">→</div>
+
+          <!-- Step 3: AI processing -->
+          <div style="display:flex;flex-direction:column;align-items:center;min-width:100px;flex:1;max-width:130px;">
+            <div style="width:70px;height:70px;border-radius:50%;background:rgba(184,147,15,0.15);border:1.5px solid rgba(184,147,15,0.4);display:flex;align-items:center;justify-content:center;margin-bottom:0.75rem;">
+              <svg width="34" height="34" viewBox="0 0 34 34" fill="none">
+                <path d="M17 5 C13 4 7 6 7 12 C7 16 9 18 7 22 C7 26 11 28 15 26 L17 28 L19 26 C23 28 27 26 27 22 C25 18 27 16 27 12 C27 6 21 4 17 5Z" stroke="#b8930f" stroke-width="1.3" fill="none"/>
+                <circle cx="13" cy="14" r="1.5" fill="#b8930f" opacity="0.8"/>
+                <circle cx="21" cy="14" r="1.5" fill="#b8930f" opacity="0.8"/>
+                <circle cx="17" cy="19" r="1.5" fill="#b8930f"/>
+                <line x1="13" y1="14" x2="17" y2="19" stroke="#b8930f" stroke-width="0.8" opacity="0.4"/>
+                <line x1="21" y1="14" x2="17" y2="19" stroke="#b8930f" stroke-width="0.8" opacity="0.4"/>
+              </svg>
+            </div>
+            <div style="font-family:'Playfair Display',serif;font-size:0.78rem;font-weight:600;color:#f7f3ec;text-align:center;margin-bottom:0.3rem;">Procesamiento IA</div>
+            <div style="font-size:0.68rem;color:rgba(247,243,236,0.4);text-align:center;line-height:1.4;">Transcripción, embeddings y clasificación ML</div>
+          </div>
+
+          <div style="color:rgba(194,98,45,0.5);font-size:1.3rem;align-self:center;padding:0 0.25rem;margin-bottom:1.5rem;">→</div>
+
+          <!-- Step 4: Explore -->
+          <div style="display:flex;flex-direction:column;align-items:center;min-width:100px;flex:1;max-width:130px;">
+            <div style="width:70px;height:70px;border-radius:50%;background:rgba(192,160,120,0.1);border:1.5px solid rgba(192,160,120,0.3);display:flex;align-items:center;justify-content:center;margin-bottom:0.75rem;">
+              <svg width="34" height="34" viewBox="0 0 34 34" fill="none">
+                <circle cx="15" cy="15" r="8" stroke="#b89f85" stroke-width="1.4" fill="none"/>
+                <line x1="21" y1="21" x2="29" y2="29" stroke="#b89f85" stroke-width="2" stroke-linecap="round"/>
+                <line x1="11" y1="15" x2="19" y2="15" stroke="#c2622d" stroke-width="1.2"/>
+                <line x1="15" y1="11" x2="15" y2="19" stroke="#c2622d" stroke-width="1.2"/>
+              </svg>
+            </div>
+            <div style="font-family:'Playfair Display',serif;font-size:0.78rem;font-weight:600;color:#f7f3ec;text-align:center;margin-bottom:0.3rem;">Exploración</div>
+            <div style="font-size:0.68rem;color:rgba(247,243,236,0.4);text-align:center;line-height:1.4;">Búsqueda semántica y recomendaciones</div>
+          </div>
+
+          <div style="color:rgba(194,98,45,0.5);font-size:1.3rem;align-self:center;padding:0 0.25rem;margin-bottom:1.5rem;">→</div>
+
+          <!-- Step 5: Query LLM -->
+          <div style="display:flex;flex-direction:column;align-items:center;min-width:100px;flex:1;max-width:130px;">
+            <div style="width:70px;height:70px;border-radius:50%;background:rgba(194,98,45,0.15);border:1.5px solid rgba(194,98,45,0.4);display:flex;align-items:center;justify-content:center;margin-bottom:0.75rem;">
+              <svg width="34" height="34" viewBox="0 0 34 34" fill="none">
+                <rect x="5" y="8" width="22" height="14" rx="2" stroke="#c2622d" stroke-width="1.3" fill="none"/>
+                <path d="M14 22 L14 27 L20 22" fill="rgba(194,98,45,0.2)" stroke="#c2622d" stroke-width="1.2" stroke-linejoin="round"/>
+                <line x1="9" y1="13" x2="23" y2="13" stroke="#c2622d" stroke-width="1"/>
+                <line x1="9" y1="16" x2="18" y2="16" stroke="#c2622d" stroke-width="1"/>
+              </svg>
+            </div>
+            <div style="font-family:'Playfair Display',serif;font-size:0.78rem;font-weight:600;color:#f7f3ec;text-align:center;margin-bottom:0.3rem;">Consulta LLM</div>
+            <div style="font-size:0.68rem;color:rgba(247,243,236,0.4);text-align:center;line-height:1.4;">Pregunta al modelo local y obtiene análisis</div>
+          </div>
+
+          <div style="color:rgba(194,98,45,0.5);font-size:1.3rem;align-self:center;padding:0 0.25rem;margin-bottom:1.5rem;">→</div>
+
+          <!-- Step 6: Institutional -->
+          <div style="display:flex;flex-direction:column;align-items:center;min-width:100px;flex:1;max-width:130px;">
+            <div style="width:70px;height:70px;border-radius:50%;background:rgba(107,124,90,0.15);border:1.5px solid rgba(107,124,90,0.4);display:flex;align-items:center;justify-content:center;margin-bottom:0.75rem;">
+              <svg width="34" height="34" viewBox="0 0 34 34" fill="none">
+                <rect x="5" y="14" width="24" height="16" rx="1" stroke="#6b7c5a" stroke-width="1.3" fill="none"/>
+                <polygon points="17,5 4,14 30,14" stroke="#6b7c5a" stroke-width="1.3" fill="none"/>
+                <rect x="13" y="21" width="8" height="9" rx="0.5" stroke="#6b7c5a" stroke-width="1.1" fill="none"/>
+                <line x1="17" y1="14" x2="17" y2="5" stroke="#c2622d" stroke-width="1" opacity="0.5"/>
+              </svg>
+            </div>
+            <div style="font-family:'Playfair Display',serif;font-size:0.78rem;font-weight:600;color:#f7f3ec;text-align:center;margin-bottom:0.3rem;">Dashboard</div>
+            <div style="font-size:0.68rem;color:rgba(247,243,236,0.4);text-align:center;line-height:1.4;">Institución consulta reportes y minería</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ML Pipeline diagram -->
+      <div class="reveal reveal-delay-2">
+        <p style="font-size:0.72rem;letter-spacing:0.18em;text-transform:uppercase;color:#a08565;margin-bottom:2rem;text-align:center;">Pipeline de Machine Learning y procesamiento inteligente</p>
+
+        <div style="display:grid;grid-template-columns:1fr;gap:1px;background:rgba(192,160,120,0.12);">
+
+          <!-- Row 1: Input types -->
+          <div style="background:#1a1410;padding:1.5rem 2rem;display:grid;grid-template-columns:auto 1fr;gap:2rem;align-items:center;">
+            <div style="font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:#a08565;white-space:nowrap;">Entrada</div>
+            <div style="display:flex;gap:1rem;flex-wrap:wrap;">
+              <span style="border:1px solid rgba(192,160,120,0.25);padding:0.4rem 1rem;font-size:0.75rem;color:rgba(247,243,236,0.7);">Texto narrativo</span>
+              <span style="border:1px solid rgba(192,160,120,0.25);padding:0.4rem 1rem;font-size:0.75rem;color:rgba(247,243,236,0.7);">Audio / relato oral</span>
+              <span style="border:1px solid rgba(192,160,120,0.25);padding:0.4rem 1rem;font-size:0.75rem;color:rgba(247,243,236,0.7);">Imagen cultural</span>
+              <span style="border:1px solid rgba(192,160,120,0.25);padding:0.4rem 1rem;font-size:0.75rem;color:rgba(247,243,236,0.7);">Metadatos regionales</span>
+            </div>
+          </div>
+
+          <!-- Row 2: Preprocessing -->
+          <div style="background:rgba(255,255,255,0.03);padding:1.5rem 2rem;display:grid;grid-template-columns:auto 1fr;gap:2rem;align-items:center;border-top:1px solid rgba(192,160,120,0.08);">
+            <div style="font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:#a08565;white-space:nowrap;">Pre-proceso</div>
+            <div style="display:flex;gap:1rem;flex-wrap:wrap;align-items:center;">
+              <div style="display:flex;align-items:center;gap:0.5rem;">
+                <div style="width:8px;height:8px;border-radius:50%;background:#c2622d;"></div>
+                <span style="font-size:0.78rem;color:rgba(247,243,236,0.65);">Whisper STT → Transcripción</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:0.5rem;">
+                <div style="width:8px;height:8px;border-radius:50%;background:#6b7c5a;"></div>
+                <span style="font-size:0.78rem;color:rgba(247,243,236,0.65);">Limpieza y normalización</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:0.5rem;">
+                <div style="width:8px;height:8px;border-radius:50%;background:#b8930f;"></div>
+                <span style="font-size:0.78rem;color:rgba(247,243,236,0.65);">Tokenización NLP</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Row 3: Embeddings -->
+          <div style="background:rgba(194,98,45,0.06);padding:1.5rem 2rem;display:grid;grid-template-columns:auto 1fr;gap:2rem;align-items:center;border-top:1px solid rgba(192,160,120,0.08);">
+            <div style="font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:#c2622d;white-space:nowrap;">Vectorización</div>
+            <div style="display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;">
+              <span style="font-size:0.8rem;color:rgba(247,243,236,0.8);font-family:'Playfair Display',serif;">Sentence Transformers → Embeddings semánticos [768 dims]</span>
+              <span style="font-size:0.7rem;color:rgba(247,243,236,0.4);">Almacenados en Elasticsearch para búsqueda vectorial</span>
+            </div>
+          </div>
+
+          <!-- Row 4: ML Classification -->
+          <div style="background:rgba(255,255,255,0.03);padding:1.5rem 2rem;display:grid;grid-template-columns:auto 1fr;gap:2rem;align-items:start;border-top:1px solid rgba(192,160,120,0.08);">
+            <div style="font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:#a08565;white-space:nowrap;margin-top:0.4rem;">Clasificación ML</div>
+            <div>
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:0.5rem;margin-bottom:0.75rem;">
+                <div style="border:1px solid rgba(194,98,45,0.3);padding:0.5rem 0.75rem;font-size:0.72rem;color:rgba(247,243,236,0.75);text-align:center;">Tradición oral</div>
+                <div style="border:1px solid rgba(194,98,45,0.3);padding:0.5rem 0.75rem;font-size:0.72rem;color:rgba(247,243,236,0.75);text-align:center;">Gastronomía</div>
+                <div style="border:1px solid rgba(194,98,45,0.3);padding:0.5rem 0.75rem;font-size:0.72rem;color:rgba(247,243,236,0.75);text-align:center;">Música regional</div>
+                <div style="border:1px solid rgba(194,98,45,0.3);padding:0.5rem 0.75rem;font-size:0.72rem;color:rgba(247,243,236,0.75);text-align:center;">Lenguas indígenas</div>
+                <div style="border:1px solid rgba(194,98,45,0.3);padding:0.5rem 0.75rem;font-size:0.72rem;color:rgba(247,243,236,0.75);text-align:center;">Festividades</div>
+                <div style="border:1px solid rgba(194,98,45,0.3);padding:0.5rem 0.75rem;font-size:0.72rem;color:rgba(247,243,236,0.75);text-align:center;">Artesanía</div>
+              </div>
+              <p style="font-size:0.72rem;color:rgba(247,243,236,0.35);">scikit-learn · Random Forest + SVM · Fine-tuning por región geográfica · Detección de riesgo de extinción</p>
+            </div>
+          </div>
+
+          <!-- Row 5: LLM -->
+          <div style="background:rgba(107,124,90,0.07);padding:1.5rem 2rem;display:grid;grid-template-columns:auto 1fr;gap:2rem;align-items:center;border-top:1px solid rgba(192,160,120,0.08);">
+            <div style="font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:#6b7c5a;white-space:nowrap;">LLM Local</div>
+            <div style="display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;">
+              <span style="font-size:0.8rem;color:rgba(247,243,236,0.8);font-family:'Playfair Display',serif;">Modelo ajustado sobre corpus de humanidades digitales</span>
+              <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+                <span style="background:rgba(107,124,90,0.2);border:1px solid rgba(107,124,90,0.3);padding:0.2rem 0.6rem;font-size:0.68rem;color:rgba(247,243,236,0.6);">Resúmenes contextuales</span>
+                <span style="background:rgba(107,124,90,0.2);border:1px solid rgba(107,124,90,0.3);padding:0.2rem 0.6rem;font-size:0.68rem;color:rgba(247,243,236,0.6);">Q&A cultural</span>
+                <span style="background:rgba(107,124,90,0.2);border:1px solid rgba(107,124,90,0.3);padding:0.2rem 0.6rem;font-size:0.68rem;color:rgba(247,243,236,0.6);">Sin APIs externas</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Row 6: Output -->
+          <div style="background:#c2622d;padding:1.5rem 2rem;display:grid;grid-template-columns:auto 1fr;gap:2rem;align-items:center;">
+            <div style="font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.6);white-space:nowrap;">Salida</div>
+            <div style="display:flex;gap:1rem;flex-wrap:wrap;">
+              <span style="border:1px solid rgba(255,255,255,0.3);padding:0.4rem 1rem;font-size:0.75rem;color:white;">Búsqueda semántica</span>
+              <span style="border:1px solid rgba(255,255,255,0.3);padding:0.4rem 1rem;font-size:0.75rem;color:white;">Reportes PDF</span>
+              <span style="border:1px solid rgba(255,255,255,0.3);padding:0.4rem 1rem;font-size:0.75rem;color:white;">Análisis de tendencias</span>
+              <span style="border:1px solid rgba(255,255,255,0.3);padding:0.4rem 1rem;font-size:0.75rem;color:white;">Alertas patrimoniales</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════
+       ALCANCE — MVP POTENCIADO
+  ═══════════════════════════════════════ -->
+  <section id="alcance" style="padding:8rem 2rem;background:#f7f3ec;">
+    <div style="max-width:1200px;margin:0 auto;">
+
+      <div style="text-align:center;margin-bottom:5rem;" class="reveal">
+        <p class="section-label" style="margin-bottom:1rem;">06 — Alcance y propuesta de valor</p>
+        <h2 class="section-title">Lo que nos diferencia de todo lo existente.</h2>
+        <p style="font-size:0.9rem;color:#705840;max-width:60ch;margin:1.5rem auto 0;line-height:1.8;font-weight:300;text-align:justify;">La mayoría de las plataformas culturales operan como repositorios pasivos. CulturaViva AI es la primera propuesta que integra análisis inteligente, soberanía tecnológica y acceso institucional en una sola arquitectura autónoma.</p>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;" class="responsive-grid reveal reveal-delay-1">
+
+        <!-- MVP incluido -->
+        <div class="scope-col">
+          <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:2rem;">
+            <div style="width:8px;height:8px;border-radius:50%;background:#6b7c5a;"></div>
+            <h3 style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:600;color:#1a1410;">Incluido en el MVP</h3>
+          </div>
+          <div>
+            <div class="scope-item"><span class="check">✓</span><span>Registro multimedia (texto, audio, imagen) desde Android</span></div>
+            <div class="scope-item"><span class="check">✓</span><span>Conversión de voz a texto para relatos orales y lenguas indígenas</span></div>
+            <div class="scope-item"><span class="check">✓</span><span>Clasificación automática ML en 6+ categorías culturales</span></div>
+            <div class="scope-item"><span class="check">✓</span><span>Búsqueda semántica con NLP y embeddings</span></div>
+            <div class="scope-item"><span class="check">✓</span><span>Consulta y análisis cultural mediante LLM local autónomo</span></div>
+            <div class="scope-item"><span class="check">✓</span><span>Autenticación y control de acceso por roles (RBAC)</span></div>
+            <div class="scope-item"><span class="check">✓</span><span>Dashboard administrativo con estadísticas de uso</span></div>
+            <div class="scope-item"><span class="check">✓</span><span>Minería de datos culturales y exportación de reportes</span></div>
+            <div class="scope-item"><span class="check">✓</span><span>Arquitectura de microservicios completa</span></div>
+            <div class="scope-item"><span class="check">✓</span><span>Seguridad HTTPS · JWT · bcrypt · Rate Limiting</span></div>
+          </div>
+        </div>
+
+        <!-- Diferenciadores clave -->
+        <div class="scope-col" style="background:#1a1410;border-color:#1a1410;">
+          <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:2rem;">
+            <div style="width:8px;height:8px;border-radius:50%;background:#c2622d;"></div>
+            <h3 style="font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:600;color:#f7f3ec;">Diferenciadores estratégicos</h3>
+          </div>
+          <div>
+            <!-- Differentiator items -->
+            <div style="display:flex;gap:1rem;align-items:flex-start;padding:0.85rem 0;border-bottom:1px solid rgba(192,160,120,0.1);">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="flex-shrink:0;margin-top:2px;">
+                <rect width="20" height="20" rx="2" fill="rgba(194,98,45,0.2)"/>
+                <path d="M5 10 L8 13 L15 7" stroke="#c2622d" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <div>
+                <div style="font-size:0.82rem;font-weight:500;color:#f7f3ec;margin-bottom:0.2rem;font-family:'Playfair Display',serif;">Soberanía tecnológica total</div>
+                <div style="font-size:0.75rem;color:rgba(247,243,236,0.5);line-height:1.5;">LLM y modelos ejecutados en infraestructura propia, sin dependencia de OpenAI, Google ni servicios externos de pago.</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:1rem;align-items:flex-start;padding:0.85rem 0;border-bottom:1px solid rgba(192,160,120,0.1);">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="flex-shrink:0;margin-top:2px;">
+                <rect width="20" height="20" rx="2" fill="rgba(107,124,90,0.2)"/>
+                <path d="M5 10 L8 13 L15 7" stroke="#6b7c5a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <div>
+                <div style="font-size:0.82rem;font-weight:500;color:#f7f3ec;margin-bottom:0.2rem;font-family:'Playfair Display',serif;">Detección de tradiciones en riesgo</div>
+                <div style="font-size:0.75rem;color:rgba(247,243,236,0.5);line-height:1.5;">Sistema de alertas automáticas cuando el ML detecta categorías culturales con escasa o nula documentación en el corpus.</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:1rem;align-items:flex-start;padding:0.85rem 0;border-bottom:1px solid rgba(192,160,120,0.1);">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="flex-shrink:0;margin-top:2px;">
+                <rect width="20" height="20" rx="2" fill="rgba(184,147,15,0.2)"/>
+                <path d="M5 10 L8 13 L15 7" stroke="#b8930f" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <div>
+                <div style="font-size:0.82rem;font-weight:500;color:#f7f3ec;margin-bottom:0.2rem;font-family:'Playfair Display',serif;">Pensado para baja conectividad</div>
+                <div style="font-size:0.75rem;color:rgba(247,243,236,0.5);line-height:1.5;">Captura y transcripción funcional offline en Android, sincronización diferida, orientado a comunidades rurales e indígenas.</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:1rem;align-items:flex-start;padding:0.85rem 0;border-bottom:1px solid rgba(192,160,120,0.1);">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="flex-shrink:0;margin-top:2px;">
+                <rect width="20" height="20" rx="2" fill="rgba(194,98,45,0.2)"/>
+                <path d="M5 10 L8 13 L15 7" stroke="#c2622d" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <div>
+                <div style="font-size:0.82rem;font-weight:500;color:#f7f3ec;margin-bottom:0.2rem;font-family:'Playfair Display',serif;">Relaciones cruzadas entre registros</div>
+                <div style="font-size:0.75rem;color:rgba(247,243,236,0.5);line-height:1.5;">El motor semántico conecta automáticamente registros similares de distintas regiones, descubriendo patrones culturales no evidentes.</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:1rem;align-items:flex-start;padding:0.85rem 0;border-bottom:1px solid rgba(192,160,120,0.1);">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="flex-shrink:0;margin-top:2px;">
+                <rect width="20" height="20" rx="2" fill="rgba(107,124,90,0.2)"/>
+                <path d="M5 10 L8 13 L15 7" stroke="#6b7c5a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <div>
+                <div style="font-size:0.82rem;font-weight:500;color:#f7f3ec;margin-bottom:0.2rem;font-family:'Playfair Display',serif;">Alineado a políticas culturales nacionales</div>
+                <div style="font-size:0.75rem;color:rgba(247,243,236,0.5);line-height:1.5;">Arquitectura compatible con los lineamientos del INAH, CONACULTA y la Convención UNESCO 2003 sobre patrimonio intangible.</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:1rem;align-items:flex-start;padding:0.85rem 0;">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="flex-shrink:0;margin-top:2px;">
+                <rect width="20" height="20" rx="2" fill="rgba(194,98,45,0.2)"/>
+                <path d="M5 10 L8 13 L15 7" stroke="#c2622d" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <div>
+                <div style="font-size:0.82rem;font-weight:500;color:#f7f3ec;margin-bottom:0.2rem;font-family:'Playfair Display',serif;">Exportación académica y minería de datos</div>
+                <div style="font-size:0.75rem;color:rgba(247,243,236,0.5);line-height:1.5;">Datasets exportables para investigadores, reportes automáticos y analítica que apoya la toma de decisiones institucionales.</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top:1.5rem;padding:1.25rem;background:rgba(194,98,45,0.1);border-left:2px solid #c2622d;">
+            <p style="font-size:0.8rem;color:rgba(247,243,236,0.65);line-height:1.65;font-weight:300;font-style:italic;text-align:justify;">CulturaViva AI no es un repositorio. Es una plataforma activa de inteligencia cultural que convierte patrimonio en conocimiento accionable.</p>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════
+       MODELO DE NEGOCIO
+  ═══════════════════════════════════════ -->
+  <section id="modelo" style="padding:8rem 2rem;background:#1a1410;color:#f7f3ec;">
+    <div style="max-width:1200px;margin:0 auto;">
+      <div style="display:grid;grid-template-columns:1fr 1.6fr;gap:6rem;align-items:start;" class="responsive-grid">
+        <div class="reveal">
+          <p class="section-label" style="margin-bottom:1rem;color:#a08565;">07 — Modelo de negocio</p>
+          <h2 class="section-title" style="color:#f7f3ec;">Sostenible sin comprometer el acceso cultural.</h2>
+          <div class="rule" style="margin:2rem 0;background:linear-gradient(90deg,transparent,rgba(192,160,120,0.3),transparent);"></div>
+          <p style="font-size:0.9rem;color:rgba(247,243,236,0.6);line-height:1.85;font-weight:300;margin-bottom:1.5rem;text-align:justify;">
+            Modelo <strong style="color:#f7f3ec;font-weight:500;">freemium</strong> que diferencia claramente entre el usuario ciudadano y el usuario institucional. El patrimonio cultural es un bien público: cualquier ciudadano puede acceder sin barreras económicas.
+          </p>
+          <p style="font-size:0.9rem;color:rgba(247,243,236,0.6);line-height:1.85;font-weight:300;text-align:justify;">
+            El plan premium, orientado a investigadores, docentes e instituciones culturales, desbloquea las capacidades analíticas avanzadas y representa la <strong style="color:#f7f3ec;font-weight:500;">principal fuente de ingresos directos</strong>.
+          </p>
+
+          <!-- B2B / B2G -->
+          <div style="margin-top:2.5rem;display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+            <div style="border:1px solid rgba(192,160,120,0.12);padding:1.25rem;">
+              <div style="font-family:'Playfair Display',serif;font-size:1.5rem;color:#c2622d;font-weight:700;margin-bottom:0.3rem;">B2B</div>
+              <p style="font-size:0.78rem;color:rgba(247,243,236,0.5);font-weight:300;line-height:1.6;text-align:justify;">Museos, centros culturales y universidades como clientes institucionales con licencias anuales.</p>
+            </div>
+            <div style="border:1px solid rgba(192,160,120,0.12);padding:1.25rem;">
+              <div style="font-family:'Playfair Display',serif;font-size:1.5rem;color:#c2622d;font-weight:700;margin-bottom:0.3rem;">B2G</div>
+              <p style="font-size:0.78rem;color:rgba(247,243,236,0.5);font-weight:300;line-height:1.6;text-align:justify;">Secretarías de cultura, INAH y organismos públicos mediante contratos de despliegue institucional.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="reveal reveal-delay-2">
+          <div style="display:flex;gap:0;">
+            <div class="plan-col plan-free" style="border-right:none;">
+              <p style="font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:#a08565;margin-bottom:0.5rem;">Plan</p>
+              <h3 style="font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;color:#1a1410;margin-bottom:0.25rem;">Gratuito</h3>
+              <p style="font-size:0.8rem;color:#705840;margin-bottom:2rem;font-weight:300;">Para ciudadanos, estudiantes e investigadores</p>
+              <div class="plan-row"><span style="color:#705840;">Consulta de contenido</span><span style="font-size:0.8rem;color:#6b7c5a;font-weight:500;">Básica</span></div>
+              <div class="plan-row"><span style="color:#705840;">Búsqueda semántica</span><span style="font-size:0.8rem;color:#6b7c5a;font-weight:500;">Limitada</span></div>
+              <div class="plan-row"><span style="color:#705840;">Analítica de datos</span><span style="font-size:0.8rem;color:#b89f85;">No</span></div>
+              <div class="plan-row"><span style="color:#705840;">Exportación de registros</span><span style="font-size:0.8rem;color:#b89f85;">No</span></div>
+              <div class="plan-row"><span style="color:#705840;">Reportes por LLM</span><span style="font-size:0.8rem;color:#b89f85;">No</span></div>
+              <div class="plan-row"><span style="color:#705840;">Soporte técnico</span><span style="font-size:0.8rem;color:#a08565;">Comunidad</span></div>
+            </div>
+            <div class="plan-col plan-premium">
+              <div style="position:absolute;top:1.5rem;right:1.5rem;background:#c2622d;color:white;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.2rem 0.6rem;">Recomendado</div>
+              <p style="font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(247,243,236,0.4);margin-bottom:0.5rem;">Plan</p>
+              <h3 style="font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;color:#f7f3ec;margin-bottom:0.25rem;">Premium</h3>
+              <p style="font-size:0.8rem;color:rgba(247,243,236,0.45);margin-bottom:2rem;font-weight:300;">Para instituciones, museos y universidades</p>
+              <div class="plan-row"><span style="color:rgba(247,243,236,0.6);">Consulta de contenido</span><span style="font-size:0.8rem;color:#b8d4a8;font-weight:500;">Completa</span></div>
+              <div class="plan-row"><span style="color:rgba(247,243,236,0.6);">Búsqueda semántica</span><span style="font-size:0.8rem;color:#b8d4a8;font-weight:500;">Avanzada</span></div>
+              <div class="plan-row"><span style="color:rgba(247,243,236,0.6);">Analítica de datos</span><span style="font-size:0.8rem;color:#c2e8b0;font-weight:500;">✓ Incluida</span></div>
+              <div class="plan-row"><span style="color:rgba(247,243,236,0.6);">Exportación de registros</span><span style="font-size:0.8rem;color:#c2e8b0;font-weight:500;">✓ Incluida</span></div>
+              <div class="plan-row"><span style="color:rgba(247,243,236,0.6);">Reportes por LLM</span><span style="font-size:0.8rem;color:#c2e8b0;font-weight:500;">✓ Incluidos</span></div>
+              <div class="plan-row"><span style="color:rgba(247,243,236,0.6);">Soporte técnico</span><span style="font-size:0.8rem;color:#f7f3ec;font-weight:500;">Prioritario</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════
+       MVP VIABILIDAD
+  ═══════════════════════════════════════ -->
+  <section style="padding:8rem 2rem;background:#f7f3ec;border-top:1px solid rgba(192,160,120,0.15);">
+    <div style="max-width:1200px;margin:0 auto;">
+      <div style="text-align:center;margin-bottom:5rem;" class="reveal">
+        <p class="section-label" style="margin-bottom:1rem;">08 — Viabilidad y MVP</p>
+        <h2 class="section-title">¿Es técnicamente viable? Sí. Aquí está el plan.</h2>
+        <p style="font-size:0.9rem;color:#705840;max-width:60ch;margin:1.5rem auto 0;line-height:1.8;font-weight:300;text-align:justify;">Complejidad técnica media-alta, completamente ejecutable mediante implementación modular. El MVP demuestra el valor central de la plataforma con funcionalidades prioritarias bien definidas.</p>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;" class="reveal reveal-delay-1">
+
+        <div style="border:1px solid rgba(192,160,120,0.25);padding:2rem;background:rgba(255,255,255,0.5);position:relative;overflow:hidden;">
+          <div style="position:absolute;top:0;left:0;width:3px;height:100%;background:#c2622d;"></div>
+          <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.75rem;">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect width="22" height="22" rx="2" fill="rgba(194,98,45,0.1)"/><rect x="5" y="4" width="8" height="11" rx="0.5" stroke="#c2622d" stroke-width="1.2" fill="none"/><line x1="7" y1="7" x2="11" y2="7" stroke="#c2622d" stroke-width="0.9"/><line x1="7" y1="9.5" x2="11" y2="9.5" stroke="#c2622d" stroke-width="0.9"/><line x1="7" y1="12" x2="9" y2="12" stroke="#c2622d" stroke-width="0.9"/><rect x="11" y="11" width="7" height="7" rx="0.5" fill="#c2622d" opacity="0.15" stroke="#c2622d" stroke-width="1.1"/></svg>
+            <div style="font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:#c2622d;">Módulo 1</div>
+          </div>
+          <h4 style="font-family:'Playfair Display',serif;font-size:1rem;font-weight:600;color:#1a1410;margin-bottom:0.5rem;">Registro Cultural</h4>
+          <p style="font-size:0.83rem;color:#705840;line-height:1.65;font-weight:300;text-align:justify;">Módulo básico de carga y visualización de contenido cultural en texto e imagen desde Android.</p>
+        </div>
+
+        <div style="border:1px solid rgba(192,160,120,0.25);padding:2rem;background:rgba(255,255,255,0.5);position:relative;overflow:hidden;">
+          <div style="position:absolute;top:0;left:0;width:3px;height:100%;background:#a08565;"></div>
+          <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.75rem;">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect width="22" height="22" rx="2" fill="rgba(160,133,101,0.1)"/><path d="M11 4 C9 3.5 5 5 5 8.5 C5 11 6 12 5 14 C5 16 7 17 9 16 L11 17 L13 16 C15 17 17 16 17 14 C16 12 17 11 17 8.5 C17 5 13 3.5 11 4Z" stroke="#a08565" stroke-width="1.2" fill="none"/><circle cx="9" cy="10" r="1" fill="#a08565" opacity="0.7"/><circle cx="13" cy="10" r="1" fill="#a08565" opacity="0.7"/><circle cx="11" cy="13" r="1" fill="#a08565"/></svg>
+            <div style="font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:#a08565;">Módulo 2</div>
+          </div>
+          <h4 style="font-family:'Playfair Display',serif;font-size:1rem;font-weight:600;color:#1a1410;margin-bottom:0.5rem;">Clasificación Automática</h4>
+          <p style="font-size:0.83rem;color:#705840;line-height:1.65;font-weight:300;text-align:justify;">Modelo ML entrenado para categorizar registros en al menos 6 categorías culturales predefinidas.</p>
+        </div>
+
+        <div style="border:1px solid rgba(192,160,120,0.25);padding:2rem;background:rgba(255,255,255,0.5);position:relative;overflow:hidden;">
+          <div style="position:absolute;top:0;left:0;width:3px;height:100%;background:#6b7c5a;"></div>
+          <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.75rem;">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect width="22" height="22" rx="2" fill="rgba(107,124,90,0.1)"/><circle cx="9" cy="9" r="4" stroke="#6b7c5a" stroke-width="1.2" fill="none"/><line x1="12" y1="12" x2="18" y2="18" stroke="#6b7c5a" stroke-width="1.6" stroke-linecap="round"/><line x1="7" y1="9" x2="11" y2="9" stroke="#c2622d" stroke-width="1"/><line x1="9" y1="7" x2="9" y2="11" stroke="#c2622d" stroke-width="1"/></svg>
+            <div style="font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:#6b7c5a;">Módulo 3</div>
+          </div>
+          <h4 style="font-family:'Playfair Display',serif;font-size:1rem;font-weight:600;color:#1a1410;margin-bottom:0.5rem;">Búsqueda Semántica</h4>
+          <p style="font-size:0.83rem;color:#705840;line-height:1.65;font-weight:300;text-align:justify;">Motor basado en embeddings para consultas conceptuales que van más allá de palabras clave simples.</p>
+        </div>
+
+        <div style="border:1px solid rgba(192,160,120,0.25);padding:2rem;background:rgba(255,255,255,0.5);position:relative;overflow:hidden;">
+          <div style="position:absolute;top:0;left:0;width:3px;height:100%;background:#b8930f;"></div>
+          <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.75rem;">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect width="22" height="22" rx="2" fill="rgba(184,147,15,0.1)"/><rect x="3" y="14" width="3" height="5" rx="0.4" fill="#b8930f" opacity="0.5"/><rect x="8" y="10" width="3" height="9" rx="0.4" fill="#b8930f" opacity="0.7"/><rect x="13" y="7" width="3" height="12" rx="0.4" fill="#b8930f" opacity="0.85"/><rect x="18" y="4" width="3" height="15" rx="0.4" fill="#b8930f"/></svg>
+            <div style="font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:#b8930f;">Módulo 4</div>
+          </div>
+          <h4 style="font-family:'Playfair Display',serif;font-size:1rem;font-weight:600;color:#1a1410;margin-bottom:0.5rem;">Dashboard Básico</h4>
+          <p style="font-size:0.83rem;color:#705840;line-height:1.65;font-weight:300;text-align:justify;">Panel de administración con estadísticas generales de uso, contenido y minería de datos culturales.</p>
+        </div>
+
+        <div style="border:1px solid rgba(192,160,120,0.25);padding:2rem;background:rgba(255,255,255,0.5);position:relative;overflow:hidden;">
+          <div style="position:absolute;top:0;left:0;width:3px;height:100%;background:#705840;"></div>
+          <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.75rem;">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect width="22" height="22" rx="2" fill="rgba(112,88,64,0.1)"/><circle cx="11" cy="9" r="4" stroke="#705840" stroke-width="1.2" fill="none"/><line x1="11" y1="13" x2="11" y2="16" stroke="#705840" stroke-width="1.2"/><line x1="8" y1="16" x2="14" y2="16" stroke="#705840" stroke-width="1.2"/><line x1="11" y1="6" x2="11" y2="8" stroke="#705840" stroke-width="1"/><line x1="9" y1="9" x2="11" y2="9" stroke="#705840" stroke-width="1"/><line x1="13" y1="9" x2="11" y2="9" stroke="#705840" stroke-width="1" opacity="0.5"/></svg>
+            <div style="font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:#705840;">Módulo 5</div>
+          </div>
+          <h4 style="font-family:'Playfair Display',serif;font-size:1rem;font-weight:600;color:#1a1410;margin-bottom:0.5rem;">Autenticación y Seguridad</h4>
+          <p style="font-size:0.83rem;color:#705840;line-height:1.65;font-weight:300;text-align:justify;">Sistema de registro, inicio de sesión, gestión de roles y protección de datos completa.</p>
+        </div>
+
+        <div style="border:1px solid rgba(192,160,120,0.25);padding:2rem;background:rgba(255,255,255,0.5);position:relative;overflow:hidden;">
+          <div style="position:absolute;top:0;left:0;width:3px;height:100%;background:#4c3c2e;"></div>
+          <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.75rem;">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect width="22" height="22" rx="2" fill="rgba(76,60,46,0.1)"/><rect x="7" y="3" width="9" height="16" rx="1.5" stroke="#4c3c2e" stroke-width="1.2" fill="none"/><line x1="9" y1="16" x2="14" y2="16" stroke="#4c3c2e" stroke-width="1"/><line x1="10" y1="8" x2="13" y2="8" stroke="#c2622d" stroke-width="0.9"/><line x1="10" y1="10.5" x2="13" y2="10.5" stroke="#c2622d" stroke-width="0.9" opacity="0.5"/></svg>
+            <div style="font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:#4c3c2e;">Módulo 6</div>
+          </div>
+          <h4 style="font-family:'Playfair Display',serif;font-size:1rem;font-weight:600;color:#1a1410;margin-bottom:0.5rem;">Aplicación Móvil</h4>
+          <p style="font-size:0.83rem;color:#705840;line-height:1.65;font-weight:300;text-align:justify;">Versión Flutter funcional para registro y consulta de contenido cultural, optimizada para Android.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA FINAL -->
+  <section style="padding:8rem 2rem;background:#c2622d;color:white;text-align:center;">
+    <div style="max-width:800px;margin:0 auto;" class="reveal">
+      <p style="font-size:0.72rem;letter-spacing:0.22em;text-transform:uppercase;color:rgba(255,255,255,0.6);margin-bottom:1.5rem;">CulturaViva AI · Ciencias Humanas · Ingeniería en Software · 2026</p>
+      <h2 style="font-family:'Playfair Display',serif;font-size:clamp(2rem,5vw,3.5rem);font-weight:700;line-height:1.1;margin-bottom:2rem;">
+        Preservando el pasado,<br/>
+        <em>analizando el presente.</em>
+      </h2>
+      <p style="font-size:1rem;color:rgba(255,255,255,0.75);max-width:54ch;margin:0 auto 3rem;line-height:1.8;font-weight:300;text-align:justify;">
+        CulturaViva AI no es un repositorio digital. Es una plataforma activa de inteligencia patrimonial que convierte grandes volúmenes de contenido cultural en conocimiento organizado, accesible y accionable para investigadores, instituciones y comunidades.
+      </p>
+      <div style="display:flex;justify-content:center;gap:1.5rem;flex-wrap:wrap;">
+        <a href="#problema" style="display:inline-block;background:white;color:#c2622d;padding:0.9rem 2.2rem;font-size:0.82rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:500;text-decoration:none;transition:all 0.25s;" onmouseover="this.style.background='#f7f3ec'" onmouseout="this.style.background='white'">Revisar propuesta</a>
+        <a href="#usuario" style="display:inline-block;border:1px solid rgba(255,255,255,0.4);color:white;padding:0.9rem 2.2rem;font-size:0.82rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:500;text-decoration:none;transition:all 0.25s;" onmouseover="this.style.borderColor='white'" onmouseout="this.style.borderColor='rgba(255,255,255,0.4)'">Ver flujo de usuario</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer style="padding:3rem 2rem;background:#111009;">
+    <div style="max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1.5rem;">
+      <div style="display:flex;align-items:center;gap:0.75rem;">
+        <svg width="24" height="24" viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="2" fill="#c2622d"/><text x="5" y="20" font-family="Georgia,serif" font-size="16" fill="white" font-weight="bold">CV</text></svg>
+        <span style="font-family:'Playfair Display',serif;font-size:0.9rem;color:rgba(247,243,236,0.6);">CulturaViva AI</span>
+      </div>
+      <p style="font-size:0.78rem;color:rgba(247,243,236,0.3);letter-spacing:0.05em;">Ciencias Humanas · Ingeniería en Software · Proyecto Integrador 2026</p>
+      <p style="font-size:0.78rem;color:rgba(247,243,236,0.3);">Documento para uso académico</p>
+    </div>
+  </footer>
+
+  <script>
+    // Nav scroll
+    const nav = document.getElementById('main-nav');
+    const cienciasBand = document.getElementById('ciencias-band');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 60);
+      // Show ciencias band when scrolled
+      cienciasBand.style.opacity = window.scrollY > 100 ? '1' : '0';
+    });
+
+    // Hero line
+    const heroLine = document.getElementById('hero-line');
+    setTimeout(() => heroLine.classList.add('expanded'), 400);
+
+    // Reveal observer
+    const revealEls = document.querySelectorAll('.reveal');
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('visible'); revealObserver.unobserve(e.target); }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    revealEls.forEach(el => revealObserver.observe(el));
+
+    // Side dots
+    const sections = ['hero','problema','justificacion','objetivos','arquitectura','usuario','alcance','modelo'];
+    const dots = document.querySelectorAll('.side-dot');
+    function updateDots() {
+      let current = 'hero';
+      sections.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) { const rect = el.getBoundingClientRect(); if (rect.top <= window.innerHeight * 0.4) current = id; }
+      });
+      dots.forEach((dot, i) => dot.classList.toggle('active', sections[i] === current));
+    }
+    dots.forEach((dot, i) => {
+      dot.addEventListener('click', () => {
+        const el = document.getElementById(sections[i]);
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+    window.addEventListener('scroll', updateDots, { passive: true });
+
+    // Responsive
+    const style = document.createElement('style');
+    style.textContent = `
+      @media (max-width: 768px) {
+        .responsive-grid { grid-template-columns: 1fr !important; gap: 3rem !important; }
+        #hero { padding-bottom: 8rem; }
+        .plan-col { padding: 1.75rem; }
+        .ciencias-band { flex-wrap: wrap; gap: 0.75rem;  }
+        .ciencias-sep { display: none; }
+      }
+    `;
+    document.head.appendChild(style);
+  </script>
+</body>
+</html>
